@@ -63,13 +63,58 @@ refs.loadMoreBtn.addEventListener("click", onLoadMore);
   }
 
 function onLoadMore() {
-  newsApiService.fetchGalleryCards().then(onRenderGallery);
+  newsApiService.fetchGalleryCards().then(onScrollmake);
    
 }
 
 function onRenderGallery(data) {
   refs.galleryContainer.insertAdjacentHTML("beforeend", galleryCards(data.hits));
-   const lightbox = new SimpleLightbox(".gallery a", 
+  
+  onSliderMake();
+  
+//   const { height: cardHeight } = document
+//   .querySelector(".gallery")
+//   .firstElementChild.getBoundingClientRect();
+
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: "smooth",
+// });
+  
+//   if (data.hits.length < 40 && data.hits.length > 0) {
+//     refs.loadMoreBtn.classList.add('is-hidden');
+//     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+//   }
+  
+
+}
+
+function onClearGallery() {
+  refs.galleryContainer.innerHTML = '';
+}
+
+function onScrollmake(data) {
+  refs.galleryContainer.insertAdjacentHTML("beforeend", galleryCards(data.hits));
+  
+  onSliderMake();
+  
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+  
+  if (data.hits.length < 40 && data.hits.length > 0) {
+    refs.loadMoreBtn.classList.add('is-hidden');
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+  }
+}
+
+function onSliderMake() {
+     const lightbox = new SimpleLightbox(".gallery a", 
      {
        close: true,
        closeText: '×',
@@ -80,30 +125,4 @@ function onRenderGallery(data) {
        disableScroll: true
      }); 
   lightbox.refresh(); 
-  
-  onScroll();
-  
-  if (data.hits.length < 40 && data.hits.length > 0) {
-    refs.loadMoreBtn.classList.add('is-hidden');
-    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
-  }
-  
-
 }
-
-function onClearGallery() {
-  refs.galleryContainer.innerHTML = '';
-}
-
-function onScroll() {
-  
-  const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
-
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
-}
-
