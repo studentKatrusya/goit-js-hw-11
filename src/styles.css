@@ -61,6 +61,8 @@ img {
       transform: scale(0.9);
   transition-duration: 300ms;
   box-shadow: 0 5px 5px -4px black;
+  display: grid;
+  align-items: end;
 }
 
 .img-card:hover,
@@ -74,9 +76,11 @@ img {
   grid-auto-columns: 290px;
   /* gap: 10px; */
   justify-content: space-around;
-  text-align: center;
 
+  text-align: center;
+   padding: 0 5px;
   font-size: 15px;
+  font-family: cursive;
 }
 
 .is-hidden{
