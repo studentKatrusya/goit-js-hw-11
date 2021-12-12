@@ -24,68 +24,70 @@ const newsApiService = new NewsApiService();
 refs.searchForm.addEventListener("submit", onSearch);
 refs.loadMoreBtn.addEventListener("click", onLoadMore);
 
-// const { height: cardHeight } = document
-//   .querySelector(".gallery")
-//   .firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
 
 
-function onSearch(e) {
+ function onSearch(e) {
   e.preventDefault();
 
-  newsApiService.query = e.currentTarget.elements.searchQuery.value;
+  newsApiService.query = e.currentTarget.elements.searchQuery.value.trim();
 
   newsApiService.resetPage();
 
-  console.log(e.currentTarget.elements.searchQuery.value)
+  // console.log(e.currentTarget.elements.searchQuery.value)
 
-
-
-   newsApiService.fetchGalleryCards()
-    
-    .then(hits => {
-    onClearGallery(); 
-    
-    onRenderGallery(hits);
-   
-    refs.loadMoreBtn.classList.remove('is-hidden');
-
-    if (!hits.length) 
-    {
-    Notiflix.Notify.warning(`We're sorry, but you've reached the end of search results.`);
-     refs.loadMoreBtn.classList.add('is-hidden');
-          return};
-    
-
-      if (newsApiService.query === '' ) {
-        onClearGallery();
-        refs.loadMoreBtn.classList.add('is-hidden');
-   Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.") 
-    };
-    
-  })
-
-
+   if (newsApiService.query === '') {
+     onClearGallery(); 
+      refs.loadMoreBtn.classList.add('is-hidden');
+        return Notiflix.Notify.warning('Please, fill the main field');
     }
 
+  
+  newsApiService.fetchGalleryCards()
+    
+    .then(data => {
+    onClearGallery(); 
+  //  console.log(response)
+    refs.loadMoreBtn.classList.remove('is-hidden');
 
+    if (!data.hits.length) 
+    {
+    Notiflix.Notify.warning(`Sorry, there are no images matching your search query. Please try again.`);
+     refs.loadMoreBtn.classList.add('is-hidden');
+          return};
+
+    onRenderGallery(data);
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images !!!`);  
+             
+      });
+      
+  }
 
 function onLoadMore() {
-   newsApiService.fetchGalleryCards().then(onRenderGallery)
+  newsApiService.fetchGalleryCards().then(onRenderGallery);
+   
 }
 
-function onRenderGallery(hits) {
-  refs.galleryContainer.insertAdjacentHTML("beforeend", galleryCards(hits));
+function onRenderGallery(data) {
+  refs.galleryContainer.insertAdjacentHTML("beforeend", galleryCards(data.hits));
    const lightbox = new SimpleLightbox(".gallery a", 
-  {
-    captionsData: "alt", 
-    captionDelay: 250, 
-     
-  }); 
+     {
+       close: true,
+       closeText: '×',
+       showCounter: true,
+       preloading: true,
+       enableKeyboard: true,
+       docClose: true,
+       disableScroll: true
+     }); 
+  lightbox.refresh(); 
+  
+  onScroll();
+  
+  if (data.hits.length < 40 && data.hits.length > 0) {
+    refs.loadMoreBtn.classList.add('is-hidden');
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+  }
+  
 
 }
 
@@ -93,7 +95,15 @@ function onClearGallery() {
   refs.galleryContainer.innerHTML = '';
 }
 
+function onScroll() {
+  
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
 
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
+}
 
-
- 

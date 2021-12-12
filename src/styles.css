@@ -1,8 +1,14 @@
+body{
+  margin: 0;
+}
+
 .search-form{
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: burlywood;
+   height: 50px;
 }
 .container_load-more{
       display: flex;
@@ -30,8 +36,9 @@ form button{
 }
 form input{
     width: 230px;
-    height: 23px;
+    height: 27px;
     border-radius: 3px;
+    border: aqua;
 }
 
 .gallery{

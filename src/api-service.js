@@ -1,47 +1,44 @@
 import axios from "axios";
-import Notiflix from 'notiflix';
+
 
 export default class NewsApiService{
     constructor() {
         this.searchQuery = '';
       this.page = 1;
+     
       
     }
-  fetchGalleryCards() {
-      const BASE_URL = 'https://pixabay.com/api'
-        return  fetch(`${BASE_URL}/?key=24753082-868cb2bb63826684a408e0cdf&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`)
-          .then(response =>
-            response.json())
-          // .then(({ totalHits }) => {
-          //   console.log(totalHits)
-          //   // return totalHits
-          // }
-          // )
-          .then(({hits}) => {
-     
+  async fetchGalleryCards() {
+    const axiosOptions = {
+        method: 'get',
+    url: 'https://pixabay.com/api/',
+      params: {
+          key: '24753082-868cb2bb63826684a408e0cdf',
+           q: `${this.searchQuery}`,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: true,
+        page: `${this.page}`,
+        per_page: 40,
+      },
+      
+    };
+     try {
+        const response = await axios( axiosOptions );
+        
+        const data = response.data;
+        console.log(data)
         this.incrementPage();
-         
-            return hits;
-  });
+         return data;
+    }
+    catch (error) {
+      console.error(error)
+}
+
     }
 
-  //   async fetchGalleryCards() {
-  //   this.incrementPage();
-  //     return await axios({
-  //       method: 'get',
-  //       url: 'https://pixabay.com/api/',
-  //       params: {
-  //         key: '24753082-868cb2bb63826684a408e0cdf',
-  //         q: `${this.searchQuery}`,
-  //         page: `${this.page}`,
-  //         image_type: 'photo',
-  //         orientation: 'horizontal',
-  //         safesearch: 'true',
-  //         per_page: 40,
-  //       },
-  //     });
-  // }
   
+ 
   
   incrementPage() {
     this.page +=1;
@@ -59,3 +56,39 @@ export default class NewsApiService{
         this.searchQuery = newQuery;
     };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   async fetchGalleryCards() {
+  //   this.incrementPage();
+  //     return await axios({
+  //       method: 'get',
+  //       url: 'https://pixabay.com/api/',
+  //       params: {
+  //         key: '24753082-868cb2bb63826684a408e0cdf',
+  //         q: `${this.searchQuery}`,
+  //         page: `${this.page}`,
+  //         image_type: 'photo',
+  //         orientation: 'horizontal',
+  //         safesearch: 'true',
+  //         per_page: 40,
+  //       },
+  //     });
+     
+  // }
